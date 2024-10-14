@@ -1,51 +1,42 @@
 import 'dart:developer';
 
-import 'package:fedora/screens/music/widgets/music_app_bar.dart';
-import 'package:fedora/screens/music/widgets/music_controller.dart';
+import 'package:fedora/screens/music/widgets/music_body_widgets/music_app_bar.dart';
+import 'package:fedora/screens/music/widgets/music_body_widgets/music_controller.dart';
 import 'package:flutter/material.dart';
 
 class MusicBody extends StatelessWidget {
-  final double offsetY;
-  final double opacity;
+  final double musicBodyOpacity;
   final double imageHeight;
-  final double musicViewHeight;
+  final double imageOffsetY;
   final VoidCallback onCollapse;
 
   const MusicBody({
     super.key,
-    required this.offsetY,
-    required this.opacity,
+    required this.musicBodyOpacity,
     required this.imageHeight,
-    required this.musicViewHeight,
+    required this.imageOffsetY,
     required this.onCollapse,
   });
 
   @override
   Widget build(BuildContext context) {
+    const double spacing = 20; // Spacing between MusicImage and MusicController
+    final double statusBarHeight = MediaQuery.of(context).padding.top;
+
     log('imageHeight : $imageHeight'); // [60, 350]
-    log('offsetY1 : $offsetY'); // [-3, -396]
-    log('musicViewHeight : $musicViewHeight'); // [72, 890]
-
-    // Calculate the Y axis position for the MusicController to stay aligned with the bottom of the image
-    double controllerOffsetY = musicViewHeight - imageHeight - 20;
-
-    // Ensure the controller doesn't go off-screen
-    if (controllerOffsetY < 0) {
-      controllerOffsetY = 0;
-    }
 
     return AnimatedOpacity(
-      opacity: opacity,
+      opacity: musicBodyOpacity,
       duration: const Duration(milliseconds: 300),
       child: Stack(
         children: [
           Transform.translate(
-            offset: const Offset(0, 72),
+            offset: Offset(0, statusBarHeight),
             // Clamp to keep it within bounds
             child: MusicAppBar(onCollapse: onCollapse),
           ),
           Transform.translate(
-            offset: Offset(0, controllerOffsetY),
+            offset: Offset(0, imageOffsetY + imageHeight + spacing),
             child: const MusicController(),
           ),
         ],

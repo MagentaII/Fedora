@@ -1,4 +1,4 @@
-import 'package:fedora/screens/widget/music_container.dart';
+import 'package:fedora/screens/container/music_container.dart';
 import 'package:flutter/material.dart';
 
 class FedoraAppView extends StatelessWidget {

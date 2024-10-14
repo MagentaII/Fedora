@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
-class BottomMusicController extends StatelessWidget {
-  const BottomMusicController({super.key});
+class CollapseMusicController extends StatelessWidget {
+  const CollapseMusicController({super.key});
 
   @override
   Widget build(BuildContext context) {
+    const double collapseMusicViewHeight = 72;
+
     return Container(
-        height: 72,
+        height: collapseMusicViewHeight, // 72
         width: double.infinity,
         color: const Color(0XFF242424),
         child: Padding(

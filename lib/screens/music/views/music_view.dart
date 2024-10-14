@@ -1,19 +1,27 @@
-import 'package:fedora/screens/music/widgets/bottom_music_controller.dart';
 import 'package:fedora/screens/music/widgets/music_body.dart';
+import 'package:fedora/screens/music/widgets/music_image.dart';
 import 'package:flutter/material.dart';
 
+import '../widgets/collapse_music_controller.dart';
+
 class MusicView extends StatelessWidget {
-  final double offsetY;
-  final double opacity;
+  final double musicBodyOpacity;
+  final double bottomMusicOpacity;
   final double imageHeight;
+  final double imageWidth;
+  final double imageOffsetX;
+  final double imageOffsetY;
   final double musicViewHeight;
   final VoidCallback onCollapse;
 
   const MusicView({
     super.key,
-    required this.offsetY,
-    required this.opacity,
+    required this.musicBodyOpacity,
+    required this.bottomMusicOpacity,
     required this.imageHeight,
+    required this.imageWidth,
+    required this.imageOffsetX,
+    required this.imageOffsetY,
     required this.musicViewHeight,
     required this.onCollapse,
   });
@@ -27,17 +35,23 @@ class MusicView extends StatelessWidget {
       child: Stack(
         children: [
           MusicBody(
-            offsetY: offsetY,
-            opacity: opacity,
+            musicBodyOpacity: musicBodyOpacity,
             imageHeight: imageHeight,
-            musicViewHeight: musicViewHeight,
+            imageOffsetY: imageOffsetY,
             onCollapse: onCollapse,
           ),
           AnimatedOpacity(
-            opacity: 1.0 - opacity,
+            opacity: bottomMusicOpacity,
             duration: const Duration(milliseconds: 300),
-            child: const BottomMusicController(),
+            child: const CollapseMusicController(),
           ),
+          Transform.translate(
+            offset: Offset(imageOffsetX, imageOffsetY),
+            child: MusicImage(
+              imageHeight: imageHeight,
+              imageWidth: imageWidth,
+            ),
+          )
         ],
       ),
     );

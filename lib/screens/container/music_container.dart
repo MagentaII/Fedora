@@ -1,9 +1,10 @@
 import 'dart:developer';
-
 import 'package:fedora/screens/home/views/home_view.dart';
 import 'package:fedora/screens/music/views/music_view.dart';
-import 'package:fedora/screens/music/widgets/music_image.dart';
 import 'package:flutter/material.dart';
+
+/// MusicContainer manages the dynamic expansion and collapse of the Music View,
+/// allowing users to adjust its size and visibility through gestures.
 
 class MusicContainer extends StatefulWidget {
   const MusicContainer({super.key});
@@ -13,15 +14,20 @@ class MusicContainer extends StatefulWidget {
 }
 
 class _MusicContainerState extends State<MusicContainer> {
-  final double spacing = 30; // Spacing between image and border
+  static const double spacing = 30; // Spacing between image and border
+  static const double appBarHeight = 72;
+  static const double minimumMusicViewHeight = 72;
+  static const double minimumImageSize = 60; // Height or Width
+  static const double initialImageOffsetX = 20; // offset X
+  static const double initialImageOffsetY = 7; // offset Y
 
   late double musicViewHeight;
   late double imageHeight;
   late double imageWidth;
   late double imageOffsetX;
   late double imageOffsetY;
-  late double scale; // Not used yet
-  late double opacity; // Music Body's opacity
+  late double musicBodyOpacity; // Music Body's opacity (image not included)
+  late double bottomMusicOpacity;
 
   @override
   void initState() {
@@ -30,49 +36,54 @@ class _MusicContainerState extends State<MusicContainer> {
   }
 
   void collapseMusicView() {
-    musicViewHeight = 72;
-    imageHeight = 60;
-    imageWidth = 60;
-    scale = imageHeight / 60; // Not used yet
-    opacity = 0.0; // Music Body's opacity
-    imageOffsetX = 20;
-    imageOffsetY = -3;
+    musicViewHeight = minimumMusicViewHeight; // 72.dp
+    imageHeight = minimumImageSize; // 60.dp
+    imageWidth = minimumImageSize; // 60.dp
+    musicBodyOpacity = 0.0; // Music Body's opacity (image not included)
+    bottomMusicOpacity = 1.0 - musicBodyOpacity;
+    imageOffsetX = initialImageOffsetX; // 20
+    imageOffsetY = initialImageOffsetY; // 7
   }
 
   void expandMusicView() {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    final statusBarHeight = MediaQuery.of(context).padding.top;
     musicViewHeight = screenHeight;
     imageWidth = screenWidth - (spacing * 2);
     imageHeight = imageWidth;
-    scale = imageHeight / 60; // Not used yet
-    opacity = 1.0; // Music Body's opacity
+    musicBodyOpacity = 1.0; // Music Body's opacity (image not included)
+    bottomMusicOpacity = 1.0 - musicBodyOpacity;
     imageOffsetX = (screenWidth - imageWidth) / 2;
-    imageOffsetY = -(screenHeight - imageHeight - 72 - 72);
+    imageOffsetY = statusBarHeight + appBarHeight;
   }
 
   void dynamicCollapseAndExpandMusicView() {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    // Adjust image size based on height, scaling between 60 and 300
+    final statusBarHeight = MediaQuery.of(context).padding.top;
+
     double normalizedHeight =
         (musicViewHeight - 72) / (screenHeight - 72); // Normalization : [0, 1]
-    log('normalizedHeight : $normalizedHeight');
-    imageHeight =
-        60 + normalizedHeight * (350 - 60); // Image scales from 60 to 300
-    imageWidth = 60 + normalizedHeight * (350 - 60); // Width scales accordingly
-    scale = imageHeight / 60;
+
+    double maximumImageSize = screenWidth - (spacing * 2);
+    imageWidth = minimumImageSize +
+        normalizedHeight * (maximumImageSize - minimumImageSize);
+    imageHeight = imageWidth;
 
     // Calculate target position
-    double targetOffsetX = (screenWidth - imageWidth) / 2;
-    double targetOffsetY = (screenHeight - imageHeight - 72 - 72);
+    double imageTargetOffsetX = (screenWidth - imageWidth) / 2;
+    double imageTargetOffsetY = statusBarHeight + appBarHeight;
 
     // Adjust position based on height
-    imageOffsetX = 20 + normalizedHeight * (targetOffsetX - 20);
-    imageOffsetY = -3 - normalizedHeight * (targetOffsetY + 3);
+    imageOffsetX = initialImageOffsetX +
+        normalizedHeight * (imageTargetOffsetX - initialImageOffsetX);
+    imageOffsetY = initialImageOffsetY +
+        normalizedHeight * (imageTargetOffsetY - initialImageOffsetY);
 
     // Calculate opacity based on height
-    opacity = normalizedHeight;
+    musicBodyOpacity = normalizedHeight;
+    bottomMusicOpacity = 1.0 - musicBodyOpacity;
   }
 
   // Handle pan updates (drag)
@@ -82,7 +93,7 @@ class _MusicContainerState extends State<MusicContainer> {
 
     setState(() {
       // Restrict height range, minimum 72px, maximum full screen height
-      if (newHeight < 72) {
+      if (newHeight < minimumMusicViewHeight) {
         collapseMusicView();
       } else if (newHeight > screenHeight) {
         expandMusicView();
@@ -110,7 +121,6 @@ class _MusicContainerState extends State<MusicContainer> {
   @override
   Widget build(BuildContext context) {
     log('offsetX : $imageOffsetX, offsetY : $imageOffsetY');
-    log('scale : $scale');
     return Scaffold(
       body: Stack(
         children: [
@@ -126,26 +136,18 @@ class _MusicContainerState extends State<MusicContainer> {
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: MusicView(
-                      offsetY: imageOffsetY,
-                      opacity: opacity,
+                      musicBodyOpacity: musicBodyOpacity,
+                      bottomMusicOpacity: bottomMusicOpacity,
                       imageHeight: imageHeight,
+                      imageWidth: imageWidth,
+                      imageOffsetX: imageOffsetX,
+                      imageOffsetY: imageOffsetY,
                       musicViewHeight: musicViewHeight,
                       onCollapse: () {
                         setState(() {
                           collapseMusicView();
                         });
                       }),
-                ),
-                //  Music Image
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Transform.translate(
-                    offset: Offset(imageOffsetX, imageOffsetY),
-                    child: MusicImage(
-                      imageHeight: imageHeight,
-                      imageWidth: imageWidth,
-                    ),
-                  ),
                 ),
               ],
             ),

@@ -5,40 +5,44 @@ class MusicController extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    const double spacing = 30; // Spacing between Music Controller and border
+    const double sliderSpacing = 8; // Spacing between Slider and border
+    const double iconSpacing = 16; // Spacing between Shuffle/Repeat and border
+
     return SingleChildScrollView(
       child: Column(
         children: [
-          Padding(
-            padding: EdgeInsets.only(left: (screenWidth - 350) / 2),
-            child: const Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                'Music Title',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.w700,
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: spacing),
+            child: const Column(
+              children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    'Music Title',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: (screenWidth - 350) / 2),
-            child: const Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                'Artist',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    'Artist',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
           const SizedBox(height: 20),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: (screenWidth - 400) / 2),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: sliderSpacing),
             child: SliderTheme(
               data: SliderTheme.of(context).copyWith(
                 // 已经过的轨道部分颜色
@@ -65,18 +69,24 @@ class MusicController extends StatelessWidget {
               ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: (screenWidth - 350) / 2),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: spacing),
             child: const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('0:00', style: TextStyle(color: Colors.white, fontSize: 16),),
-                Text('4:44', style: TextStyle(color: Colors.white, fontSize: 16),),
+                Text(
+                  '0:00',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+                Text(
+                  '4:44',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
               ],
             ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: (screenWidth - 380) / 2),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: iconSpacing),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
