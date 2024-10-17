@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/home_app_bar.dart';
+import '../widgets/home_sliver_app_bar.dart';
 import '../widgets/home_body.dart';
 
 class HomeView extends StatelessWidget {
@@ -8,8 +8,6 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       body: Container(
         height: double.infinity,
@@ -28,16 +26,22 @@ class HomeView extends StatelessWidget {
             ],
           ),
         ),
-        child: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            HomeAppBar(),
-            SizedBox(height: 16),
-            Expanded(
-              child: HomeBody(),
-            ),
+        child: const CustomScrollView(
+          slivers: [
+            HomeSliverAppBar(),
+            HomeBody(),
           ],
         ),
+        // child: const Column(
+        //   crossAxisAlignment: CrossAxisAlignment.start,
+        //   children: [
+        //     HomeAppBar(),
+        //     SizedBox(height: 16),
+        //     Expanded(
+        //       child: HomeBody(),
+        //     ),
+        //   ],
+        // ),
       ),
     );
   }

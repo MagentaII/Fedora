@@ -1,4 +1,4 @@
-import 'package:fedora/screens/home/widgets/song_list_item.dart';
+import 'package:fedora/screens/home/widgets/song_sliver_list_item.dart';
 import 'package:flutter/material.dart';
 
 class HomeBody extends StatelessWidget {
@@ -6,6 +6,6 @@ class HomeBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(child: const SongListItem());
+    return const SongSliverListItem();
   }
 }
