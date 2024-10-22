@@ -307,7 +307,8 @@ class _MusicContainerState extends State<MusicContainer>
     _bottomSheetAnimationController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         setState(() {
-          if (targetHeight == (screenHeight - (statusBarHeight + minimumMusicViewHeight))) {
+          if (targetHeight ==
+              (screenHeight - (statusBarHeight + minimumMusicViewHeight))) {
             expandBottomSheet();
           } else if (targetHeight == minimumBottomSheetHeight) {
             collapseBottomSheet();
@@ -346,6 +347,13 @@ class _MusicContainerState extends State<MusicContainer>
     });
   }
 
+  void _onTap() {
+    final screenHeight = MediaQuery.of(context).size.height;
+    if (musicViewState == MusicViewState.collapsed) {
+      animateMusicView(screenHeight);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     log('offsetX : $imageOffsetX, offsetY : $imageOffsetY');
@@ -372,6 +380,7 @@ class _MusicContainerState extends State<MusicContainer>
               }
             },
             onPanEnd: _onPanEnd,
+            onTap: _onTap,
             child: Stack(
               children: [
                 //  Music View
