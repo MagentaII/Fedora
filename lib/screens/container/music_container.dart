@@ -2,6 +2,9 @@ import 'dart:developer';
 import 'package:fedora/screens/home/views/home_view.dart';
 import 'package:fedora/screens/music/views/music_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../provider/music_model.dart';
 
 /// MusicContainer manages the dynamic expansion and collapse of the Music View,
 /// allowing users to adjust its size and visibility through gestures.
@@ -347,66 +350,87 @@ class _MusicContainerState extends State<MusicContainer>
     });
   }
 
-  void _onTap() {
+  void _collapseMusicControllerOnTap() {
     final screenHeight = MediaQuery.of(context).size.height;
     if (musicViewState == MusicViewState.collapsed) {
       animateMusicView(screenHeight);
+    } else if (musicViewState == MusicViewState.expanded &&
+        bottomSheetState == BottomSheetState.expanded) {
+      animateBottomSheet(minimumBottomSheetHeight);
     }
+  }
+
+  void _musicTarBarOnTap() {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final statusBarHeight = MediaQuery.of(context).padding.top;
+    if (bottomSheetState == BottomSheetState.collapsed &&
+        musicViewState == MusicViewState.expanded) {
+      animateBottomSheet(
+          screenHeight - (statusBarHeight + minimumMusicViewHeight));
+    }
+  }
+
+  Widget _buildMusicView(VoidCallback onCollapseTap, VoidCallback onTarBarTap) {
+    return Stack(
+      children: [
+        //  Music View
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: MusicView(
+            musicBodyOpacity: musicBodyOpacity,
+            bottomMusicOpacity: bottomMusicOpacity,
+            imageHeight: imageHeight,
+            imageWidth: imageWidth,
+            imageOffsetX: imageOffsetX,
+            imageOffsetY: imageOffsetY,
+            musicViewHeight: musicViewHeight,
+            bottomSheetHeight: bottomSheetHeight,
+            collapseMusicControllerOffsetY: collapseMusicControllerOffsetY,
+            onCollapse: () {
+              animateMusicView(minimumMusicViewHeight);
+            },
+            collapseMusicControllerOnTap: onCollapseTap,
+            musicTarBarOnTap: onTarBarTap,
+          ),
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     log('offsetX : $imageOffsetX, offsetY : $imageOffsetY');
+    final musicModel = Provider.of<MusicModel>(context);
     return Scaffold(
       body: Stack(
         children: [
           const HomeView(),
           // home
           // library
-          GestureDetector(
-            onPanUpdate: (details) {
-              if (musicViewState == MusicViewState.expanded &&
-                  bottomSheetState == BottomSheetState.collapsed) {
-                if (details.delta.dy < 0) {
-                  _onPanUpdateBottomSheet(details);
-                } else if (details.delta.dy > 0) {
-                  _onPanUpdate(details);
-                }
-              } else if (musicViewState == MusicViewState.expanded &&
-                  bottomSheetState != BottomSheetState.collapsed) {
-                _onPanUpdateBottomSheet(details);
-              } else if (musicViewState != MusicViewState.expanded) {
-                _onPanUpdate(details);
-              }
-            },
-            onPanEnd: _onPanEnd,
-            onTap: _onTap,
-            child: Stack(
-              children: [
-                //  Music View
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: MusicView(
-                    musicBodyOpacity: musicBodyOpacity,
-                    bottomMusicOpacity: bottomMusicOpacity,
-                    imageHeight: imageHeight,
-                    imageWidth: imageWidth,
-                    imageOffsetX: imageOffsetX,
-                    imageOffsetY: imageOffsetY,
-                    musicViewHeight: musicViewHeight,
-                    bottomSheetHeight: bottomSheetHeight,
-                    collapseMusicControllerOffsetY:
-                        collapseMusicControllerOffsetY,
-                    onCollapse: () {
-                      setState(() {
-                        animateMusicView(minimumMusicViewHeight);
-                      });
-                    },
+          musicModel.music.musicId == '-1'
+              ? _buildMusicView(() {}, () {})
+              : GestureDetector(
+                  onPanUpdate: (details) {
+                    if (musicViewState == MusicViewState.expanded &&
+                        bottomSheetState == BottomSheetState.collapsed) {
+                      if (details.delta.dy < 0) {
+                        _onPanUpdateBottomSheet(details);
+                      } else if (details.delta.dy > 0) {
+                        _onPanUpdate(details);
+                      }
+                    } else if (musicViewState == MusicViewState.expanded &&
+                        bottomSheetState != BottomSheetState.collapsed) {
+                      _onPanUpdateBottomSheet(details);
+                    } else if (musicViewState != MusicViewState.expanded) {
+                      _onPanUpdate(details);
+                    }
+                  },
+                  onPanEnd: _onPanEnd,
+                  child: _buildMusicView(
+                    _collapseMusicControllerOnTap,
+                    _musicTarBarOnTap,
                   ),
                 ),
-              ],
-            ),
-          ),
         ],
       ),
     );

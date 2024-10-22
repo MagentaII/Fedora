@@ -16,6 +16,8 @@ class MusicView extends StatelessWidget {
   final double bottomSheetHeight;
   final double collapseMusicControllerOffsetY;
   final VoidCallback onCollapse;
+  final VoidCallback collapseMusicControllerOnTap;
+  final VoidCallback musicTarBarOnTap;
 
   const MusicView({
     super.key,
@@ -29,6 +31,8 @@ class MusicView extends StatelessWidget {
     required this.bottomSheetHeight,
     required this.collapseMusicControllerOffsetY,
     required this.onCollapse,
+    required this.collapseMusicControllerOnTap,
+    required this.musicTarBarOnTap,
   });
 
   @override
@@ -51,7 +55,7 @@ class MusicView extends StatelessWidget {
             child: AnimatedOpacity(
               opacity: bottomMusicOpacity,
               duration: const Duration(milliseconds: 300),
-              child: const CollapseMusicController(),
+              child: CollapseMusicController(onTap: collapseMusicControllerOnTap),
             ),
           ),
           Opacity(
@@ -82,6 +86,7 @@ class MusicView extends StatelessWidget {
               ),
               child: MusicTarBar(
                 bottomSheetHeight: bottomSheetHeight,
+                onTap: musicTarBarOnTap,
               ),
             ),
           ),
@@ -89,6 +94,4 @@ class MusicView extends StatelessWidget {
       ),
     );
   }
-
-
 }

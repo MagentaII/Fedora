@@ -1,11 +1,15 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 class MusicTarBar extends StatefulWidget {
   final double bottomSheetHeight;
+  final VoidCallback onTap;
 
   const MusicTarBar({
     super.key,
     required this.bottomSheetHeight,
+    required this.onTap,
   });
 
   @override
@@ -33,7 +37,10 @@ class _MusicTarBarState extends State<MusicTarBar>
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
     return Stack(
       children: [
         Container(
@@ -45,11 +52,12 @@ class _MusicTarBarState extends State<MusicTarBar>
             labelColor: Colors.white,
             labelStyle: const TextStyle(fontWeight: FontWeight.bold),
             unselectedLabelColor:
-                widget.bottomSheetHeight <= minimumBottomSheetHeight
-                    ? Colors.white
-                    : Colors.white70,
+            widget.bottomSheetHeight <= minimumBottomSheetHeight
+                ? Colors.white
+                : Colors.white70,
             unselectedLabelStyle: TextStyle(
-                fontWeight: widget.bottomSheetHeight <= minimumBottomSheetHeight
+                fontWeight: widget.bottomSheetHeight <=
+                    minimumBottomSheetHeight
                     ? FontWeight.bold
                     : FontWeight.w500),
             indicatorColor: Colors.white,
@@ -94,6 +102,10 @@ class _MusicTarBarState extends State<MusicTarBar>
                 ),
               ),
             ],
+            onTap: (_) {
+              log('onTap');
+              widget.onTap();
+            },
           ),
         ),
         Transform.translate(
