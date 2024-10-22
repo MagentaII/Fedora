@@ -1,4 +1,6 @@
+import 'package:fedora/provider/music_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MusicController extends StatelessWidget {
   const MusicController({super.key});
@@ -14,30 +16,64 @@ class MusicController extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.symmetric(horizontal: spacing),
-            child: const Column(
-              children: [
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    'Music Title',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 28,
-                      fontWeight: FontWeight.w700,
+            child: Consumer<MusicModel>(
+              builder:
+                  (BuildContext context, MusicModel musicModel, Widget? child) {
+                return Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        musicModel.music.musicName.isNotEmpty
+                            ? musicModel.music.musicName
+                            : 'Unknown Title',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 28,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    'Artist',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        musicModel.music.artistName.isNotEmpty
+                            ? musicModel.music.artistName
+                            : 'Unknown Artist',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ],
+                  ],
+                );
+              },
+              // child: const Column(
+              //   children: [
+              //     Align(
+              //       alignment: Alignment.topLeft,
+              //       child: Text(
+              //         'Music Title',
+              //         style: TextStyle(
+              //           color: Colors.white,
+              //           fontSize: 28,
+              //           fontWeight: FontWeight.w700,
+              //         ),
+              //       ),
+              //     ),
+              //     Align(
+              //       alignment: Alignment.topLeft,
+              //       child: Text(
+              //         'Artist',
+              //         style: TextStyle(
+              //           color: Colors.white,
+              //           fontSize: 20,
+              //         ),
+              //       ),
+              //     ),
+              //   ],
+              // ),
             ),
           ),
           const SizedBox(height: 20),

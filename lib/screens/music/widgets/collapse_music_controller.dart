@@ -1,5 +1,7 @@
+import 'package:fedora/provider/music_model.dart';
 import 'package:fedora/screens/music/widgets/music_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CollapseMusicController extends StatelessWidget {
   const CollapseMusicController({super.key});
@@ -20,33 +22,63 @@ class CollapseMusicController extends StatelessWidget {
             child: Container(
               height: double.infinity,
               padding: const EdgeInsets.only(left: 20, top: 7),
-              child: const Row(
+              child: Row(
                 children: [
-                  MusicImage(
+                  const MusicImage(
                     imageHeight: minimumImageSize,
                     imageWidth: minimumImageSize,
                   ),
-                  SizedBox(width: 16),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Music Title',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      Text(
-                        'Artist',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ],
+                  const SizedBox(width: 16),
+                  Consumer<MusicModel>(
+                    builder: (BuildContext context, MusicModel musicModel,
+                        Widget? child) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            musicModel.music.musicName.isNotEmpty
+                                ? musicModel.music.musicName
+                                : 'Unknown Title',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          Text(
+                            musicModel.music.artistName.isNotEmpty
+                                ? musicModel.music.artistName
+                                : 'Unknown Artist',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                    // child: Column(
+                    //   crossAxisAlignment: CrossAxisAlignment.start,
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: [
+                    //     Text(
+                    //       'Music Title',
+                    //       style: TextStyle(
+                    //         color: Colors.white,
+                    //         fontSize: 20,
+                    //         fontWeight: FontWeight.w700,
+                    //       ),
+                    //     ),
+                    //     Text(
+                    //       'Artist',
+                    //       style: TextStyle(
+                    //         color: Colors.white,
+                    //         fontSize: 16,
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
                   ),
                 ],
               ),
