@@ -3,6 +3,9 @@ import 'package:fedora/screens/music/widgets/music_image.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/collapse_music_controller.dart';
+import '../widgets/music_body_widgets/music content.dart';
+import '../widgets/music_body_widgets/music_app_bar.dart';
+import '../widgets/music_body_widgets/music_controller.dart';
 import '../widgets/music_tar_bar.dart';
 
 class MusicView extends StatelessWidget {
@@ -38,6 +41,7 @@ class MusicView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const double minimumImageSize = 60; // Height or Width
+
     return Container(
       height: musicViewHeight,
       width: double.infinity,

@@ -9,6 +9,7 @@ class MusicAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     const double appBarHeight = 72;
     return Container(
+      // color: Colors.teal,
       height: appBarHeight,
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Row(

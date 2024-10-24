@@ -15,21 +15,21 @@ class LocalData implements LocalDataImpl {
       musicName: 'Playing with Light',
       artistName: 'Roie Shpigler',
       musicImage: 'assets/images/playing_with_light_image.jpg',
-      musicPath: 'musics/playing_with_light.mp3',
+      musicPath: 'assets/musics/playing_with_light.mp3',
     ),
     Music(
       musicId: '2',
       musicName: 'Hopscotch',
       artistName: 'Louis Adrien',
       musicImage: 'assets/images/hopscotch_image.jpg',
-      musicPath: 'musics/hopscotch.mp3',
+      musicPath: 'assets/musics/hopscotch.mp3',
     ),
     Music(
       musicId: '3',
       musicName: 'Woodcraft',
       artistName: 'Ziv Moran',
       musicImage: 'assets/images/woodcraft_image.jpg',
-      musicPath: 'musics/woodcraft.mp3',
+      musicPath: 'assets/musics/woodcraft.mp3',
     ),
   ];
 

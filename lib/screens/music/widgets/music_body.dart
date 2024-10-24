@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:fedora/screens/music/widgets/music_body_widgets/music%20content.dart';
 import 'package:fedora/screens/music/widgets/music_body_widgets/music_app_bar.dart';
 import 'package:fedora/screens/music/widgets/music_body_widgets/music_controller.dart';
 import 'package:flutter/material.dart';
@@ -20,26 +21,40 @@ class MusicBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double spacing = 20; // Spacing between MusicImage and MusicController
+    // Spacing between MusicImage and Music Content / Spacing between Music Content and Music Controller
+    const double spacing = 20;
     final double statusBarHeight = MediaQuery.of(context).padding.top;
 
     log('imageHeight : $imageHeight'); // [60, 350]
 
-    return AnimatedOpacity(
-      opacity: musicBodyOpacity,
-      duration: const Duration(milliseconds: 300),
-      child: Stack(
-        children: [
-          Transform.translate(
-            offset: Offset(0, statusBarHeight),
-            // Clamp to keep it within bounds
-            child: MusicAppBar(onCollapse: onCollapse),
-          ),
-          Transform.translate(
-            offset: Offset(0, imageOffsetY + imageHeight + spacing),
-            child: const MusicController(),
-          ),
-        ],
+    return Container(
+      height: double.infinity,
+      width: double.infinity,
+      // color: Colors.pink,
+      child: AnimatedOpacity(
+        opacity: musicBodyOpacity,
+        duration: const Duration(milliseconds: 300),
+        child: Stack(
+          children: [
+            Transform.translate(
+              offset: Offset(0, statusBarHeight),
+              // Clamp to keep it within bounds
+              child: MusicAppBar(onCollapse: onCollapse),
+            ),
+            Transform.translate(
+              offset: Offset(0, imageOffsetY + imageHeight + spacing),
+              child: const SingleChildScrollView(
+                child: Column(
+                  children: [
+                    MusicContent(),
+                    SizedBox(height: spacing),
+                    MusicController(),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

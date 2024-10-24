@@ -13,7 +13,6 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-
   @override
   void initState() {
     super.initState();
@@ -51,16 +50,6 @@ class _HomeViewState extends State<HomeView> {
             HomeBody(),
           ],
         ),
-        // child: const Column(
-        //   crossAxisAlignment: CrossAxisAlignment.start,
-        //   children: [
-        //     HomeAppBar(),
-        //     SizedBox(height: 16),
-        //     Expanded(
-        //       child: HomeBody(),
-        //     ),
-        //   ],
-        // ),
       ),
     );
   }
