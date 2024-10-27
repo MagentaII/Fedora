@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:fedora/screens/music/widgets/music_body_widgets/music%20content.dart';
 import 'package:fedora/screens/music/widgets/music_body_widgets/music_app_bar.dart';
 import 'package:fedora/screens/music/widgets/music_body_widgets/music_controller.dart';
+import 'package:fedora/screens/music/widgets/music_body_widgets/music_seek_bar.dart';
 import 'package:flutter/material.dart';
 
 class MusicBody extends StatelessWidget {
@@ -48,6 +49,7 @@ class MusicBody extends StatelessWidget {
                   children: [
                     MusicContent(),
                     SizedBox(height: spacing),
+                    MusicSeekBar(),
                     MusicController(),
                   ],
                 ),

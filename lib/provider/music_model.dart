@@ -1,8 +1,10 @@
 import 'package:fedora/usecases/music_service.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../models/music.dart';
+import '../screens/music/widgets/music_body_widgets/seek_bar.dart';
 
 abstract class MusicProvider {
   void loadPlaylist();
@@ -14,6 +16,10 @@ abstract class MusicProvider {
   void resumeMusic();
 
   void pauseMusic();
+
+  void dragMusicPosition(double? value);
+
+void seekMusic(Duration position);
 }
 
 class MusicModel with ChangeNotifier implements MusicProvider {
@@ -25,6 +31,7 @@ class MusicModel with ChangeNotifier implements MusicProvider {
   bool _isLoading = false;
   Music _music = Music.empty();
   AudioPlayer _audioPlayer = AudioPlayer();
+  Duration? _dragValue;
 
   List<Music> get musics => _musics;
 
@@ -33,6 +40,17 @@ class MusicModel with ChangeNotifier implements MusicProvider {
   Music get music => _music;
 
   AudioPlayer get audioPlayer => _audioPlayer;
+
+  Duration? get dragValue => _dragValue;
+
+  Stream<PositionData> get positionDataStream =>
+      Rx.combineLatest3<Duration, Duration, Duration?, PositionData>(
+        _audioPlayer.positionStream,
+        _audioPlayer.bufferedPositionStream,
+        _audioPlayer.durationStream,
+        (position, bufferedPosition, duration) =>
+            PositionData(position, bufferedPosition, duration ?? Duration.zero),
+      );
 
   @override
   void loadPlaylist() {
@@ -66,7 +84,19 @@ class MusicModel with ChangeNotifier implements MusicProvider {
 
   @override
   void resumeMusic() {
-    _musicService.resumeMusic(_music, _audioPlayer.position);
+    _musicService.resumeMusic(_audioPlayer.position);
     notifyListeners();
   }
+
+  @override
+  void dragMusicPosition(double? value) {
+    _dragValue = value == null ? null : Duration(milliseconds: value.round());
+    notifyListeners();
+  }
+
+@override
+void seekMusic(Duration newPosition) {
+    _musicService.seekMusic(newPosition);
+    notifyListeners();
+}
 }

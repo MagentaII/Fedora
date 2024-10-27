@@ -10,100 +10,48 @@ class MusicController extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double spacing = 30; // Spacing between Music Controller and border
-    const double sliderSpacing = 8; // Spacing between Slider and border
     const double iconSpacing = 16; // Spacing between Shuffle/Repeat and border
 
     return Consumer<MusicModel>(
       builder: (BuildContext context, MusicModel musicModel, Widget? child) {
         return Container(
-          // color: Colors.indigoAccent,
-          child: Column(
+          // color: Colors.teal,
+          padding: const EdgeInsets.symmetric(horizontal: iconSpacing),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: sliderSpacing),
-                child: SliderTheme(
-                  data: SliderTheme.of(context).copyWith(
-                    // 已经过的轨道部分颜色
-                    activeTrackColor: Colors.white,
-                    // 未经过的轨道部分颜色
-                    inactiveTrackColor: Colors.white30,
-                    // 滑块的颜色
-                    thumbColor: Colors.white,
-                    // 滑块点击时的颜色
-                    overlayColor: Colors.white.withOpacity(0.2),
-                    // 轨道的高度
-                    trackHeight: 2.0,
-                    thumbShape: const RoundSliderThumbShape(
-                      enabledThumbRadius: 8.0, // 调整滑块圆形的半径
-                    ),
-                  ),
-                  child: Slider(
-                    value: 50,
-                    max: 100.0,
-                    min: 0.0,
-                    onChanged: (value) {
-                      // 滑块变化时的逻辑处理
-                    },
-                  ),
-                ),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.shuffle),
+                color: Colors.white,
+                iconSize: 28,
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: spacing),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '0:00',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                    Text(
-                      '4:44',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ],
-                ),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.skip_previous),
+                color: Colors.white,
+                iconSize: 40,
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: iconSpacing),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.shuffle),
-                      color: Colors.white,
-                      iconSize: 28,
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.skip_previous),
-                      color: Colors.white,
-                      iconSize: 40,
-                    ),
-                    StreamBuilder<PlayerState>(
-                      stream: musicModel.audioPlayer.playerStateStream,
-                      builder: (context, snapshot) {
-                        final playerState = snapshot.data;
-                        return _playPauseButton(context,
-                            audioPlayer: musicModel.audioPlayer,
-                            playerState: playerState);
-                      },
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.skip_next),
-                      color: Colors.white,
-                      iconSize: 40,
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.repeat_sharp),
-                      color: Colors.white,
-                      iconSize: 28,
-                    ),
-                  ],
-                ),
+              StreamBuilder<PlayerState>(
+                stream: musicModel.audioPlayer.playerStateStream,
+                builder: (context, snapshot) {
+                  final playerState = snapshot.data;
+                  return _playPauseButton(context,
+                      audioPlayer: musicModel.audioPlayer,
+                      playerState: playerState);
+                },
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.skip_next),
+                color: Colors.white,
+                iconSize: 40,
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.repeat_sharp),
+                color: Colors.white,
+                iconSize: 28,
               ),
             ],
           ),

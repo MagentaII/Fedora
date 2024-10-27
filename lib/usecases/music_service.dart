@@ -15,9 +15,11 @@ abstract class MusicServiceImpl {
 
   void playMusic(Music music);
 
-  void resumeMusic(Music music, Duration currentPosition);
+  void resumeMusic(Duration currentPosition);
 
   void pauseMusic(Music music);
+
+  void seekMusic(Duration position);
 }
 
 class MusicService implements MusicServiceImpl {
@@ -62,27 +64,32 @@ class MusicService implements MusicServiceImpl {
     return _musicRepository.getMusicId(index);
   }
 
+  // @override
+  // void pauseMusic(Music music) {
+  //   final index = _audioPlayer.audioSource?.sequence.indexWhere((source) {
+  //     log('music.musicPath : ${music.musicPath}');
+  //     log('source.uri : ${(source as UriAudioSource).uri}');
+  //     return (source as UriAudioSource).uri ==
+  //         Uri.parse('asset:///${music.musicPath}');
+  //   });
+  //
+  //   if (index != -1) {
+  //     _audioPlayer.pause();
+  //   } else {
+  //     log('Music not found to pause');
+  //   }
+  // }
+
   @override
   void pauseMusic(Music music) {
-    final index = _audioPlayer.audioSource?.sequence.indexWhere((source) {
-      log('music.musicPath : ${music.musicPath}');
-      log('source.uri : ${(source as UriAudioSource).uri}');
-      return (source as UriAudioSource).uri == Uri.parse('asset:///${music.musicPath}');
-    });
-
-    if (index != -1) {
-      _audioPlayer.pause();
-    } else {
-      log('Music not found to pause');
-    }
+    _audioPlayer.pause();
   }
 
   @override
   void playMusic(Music music) {
     final index = _audioPlayer.audioSource?.sequence.indexWhere((source) {
-      log('music.musicPath : ${music.musicPath}');
-      log('source.uri : ${(source as UriAudioSource).uri}');
-      return (source as UriAudioSource).uri == Uri.parse('asset:///${music.musicPath}');
+      return (source as UriAudioSource).uri ==
+          Uri.parse('asset:///${music.musicPath}');
     });
 
     if (index != -1) {
@@ -93,19 +100,30 @@ class MusicService implements MusicServiceImpl {
     }
   }
 
-  @override
-  void resumeMusic(Music music, Duration currentPosition) {
-    final index = _audioPlayer.audioSource?.sequence.indexWhere((source) {
-      log('music.musicPath : ${music.musicPath}');
-      log('source.uri : ${(source as UriAudioSource).uri}');
-      return (source as UriAudioSource).uri == Uri.parse('asset:///${music.musicPath}');
-    });
+  // @override
+  // void resumeMusic(Music music, Duration currentPosition) {
+  //   final index = _audioPlayer.audioSource?.sequence.indexWhere((source) {
+  //     log('music.musicPath : ${music.musicPath}');
+  //     log('source.uri : ${(source as UriAudioSource).uri}');
+  //     return (source as UriAudioSource).uri == Uri.parse('asset:///${music.musicPath}');
+  //   });
+  //
+  //   if (index != -1) {
+  //     _audioPlayer.seek(currentPosition, index: index);
+  //     _audioPlayer.play();
+  //   } else {
+  //     log('Music not found to resume');
+  //   }
+  // }
 
-    if (index != -1) {
-      _audioPlayer.seek(currentPosition, index: index);
-      _audioPlayer.play();
-    } else {
-      log('Music not found to resume');
-    }
+  @override
+  void resumeMusic(Duration currentPosition) {
+    _audioPlayer.seek(currentPosition);
+    _audioPlayer.play();
+  }
+
+  @override
+  void seekMusic(Duration position) {
+    _audioPlayer.seek(position);
   }
 }
