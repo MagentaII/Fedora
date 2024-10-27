@@ -38,17 +38,6 @@ class MusicImage extends StatelessWidget {
           ),
         );
       },
-      // child: Container(
-      //   height: imageHeight,
-      //   width: imageWidth,
-      //   decoration: BoxDecoration(
-      //     borderRadius: BorderRadius.circular(radius),
-      //     image: const DecorationImage(
-      //       image: AssetImage('assets/images/default_album_art.jpg'),
-      //       fit: BoxFit.cover,
-      //     ),
-      //   ),
-      // ),
     );
   }
 }

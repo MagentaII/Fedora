@@ -27,7 +27,9 @@ class MusicController extends StatelessWidget {
                 iconSize: 28,
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  context.read<MusicModel>().previousMusic();
+                },
                 icon: const Icon(Icons.skip_previous),
                 color: Colors.white,
                 iconSize: 40,
@@ -42,7 +44,9 @@ class MusicController extends StatelessWidget {
                 },
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  context.read<MusicModel>().nextMusic();
+                },
                 icon: const Icon(Icons.skip_next),
                 color: Colors.white,
                 iconSize: 40,
@@ -61,6 +65,7 @@ class MusicController extends StatelessWidget {
   }
 }
 
+/// ======================================================================== ///
 Widget _playPauseButton(BuildContext context,
     {PlayerState? playerState, AudioPlayer? audioPlayer}) {
   log('click play button');

@@ -17,11 +17,16 @@ abstract class MusicServiceImpl {
 
   void resumeMusic(Duration currentPosition);
 
-  void pauseMusic(Music music);
+  void pauseMusic();
 
   void seekMusic(Duration position);
+
+  int nextMusic();
+
+  int previousMusic();
 }
 
+/// ======================================================================== ///
 class MusicService implements MusicServiceImpl {
   final MusicRepository _musicRepository;
   final AudioPlayer _audioPlayer;
@@ -29,6 +34,7 @@ class MusicService implements MusicServiceImpl {
   MusicService(this._musicRepository, {AudioPlayer? audioPlayer})
       : _audioPlayer = audioPlayer ?? AudioPlayer();
 
+  /// ====================================================================== ///
   @override
   AudioPlayer loadMusics() {
     final musics = _musicRepository.getAllMusic();
@@ -81,7 +87,7 @@ class MusicService implements MusicServiceImpl {
   // }
 
   @override
-  void pauseMusic(Music music) {
+  void pauseMusic() {
     _audioPlayer.pause();
   }
 
@@ -125,5 +131,19 @@ class MusicService implements MusicServiceImpl {
   @override
   void seekMusic(Duration position) {
     _audioPlayer.seek(position);
+  }
+
+  @override
+  int nextMusic() {
+    int nextIndex = _audioPlayer.nextIndex ?? -1;
+    _audioPlayer.hasNext ? _audioPlayer.seekToNext() : null;
+    return nextIndex;
+  }
+
+  @override
+  int previousMusic() {
+    int previousIndex = _audioPlayer.previousIndex ?? -1;
+    _audioPlayer.hasPrevious ? _audioPlayer.seekToPrevious() : null;
+    return previousIndex;
   }
 }

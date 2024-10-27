@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:fedora/usecases/music_service.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
@@ -19,20 +21,27 @@ abstract class MusicProvider {
 
   void dragMusicPosition(double? value);
 
-void seekMusic(Duration position);
+  void seekMusic(Duration position);
+
+  void nextMusic();
+
+  void previousMusic();
 }
 
+/// ====================================================================== ///
 class MusicModel with ChangeNotifier implements MusicProvider {
   final MusicService _musicService;
 
   MusicModel(this._musicService);
 
+  /// ====================================================================== ///
   List<Music> _musics = [];
   bool _isLoading = false;
   Music _music = Music.empty();
   AudioPlayer _audioPlayer = AudioPlayer();
   Duration? _dragValue;
 
+  /// ====================================================================== ///
   List<Music> get musics => _musics;
 
   bool get isLoading => _isLoading;
@@ -52,6 +61,7 @@ class MusicModel with ChangeNotifier implements MusicProvider {
             PositionData(position, bufferedPosition, duration ?? Duration.zero),
       );
 
+  /// ====================================================================== ///
   @override
   void loadPlaylist() {
     _isLoading = true;
@@ -78,7 +88,7 @@ class MusicModel with ChangeNotifier implements MusicProvider {
 
   @override
   void pauseMusic() {
-    _musicService.pauseMusic(_music);
+    _musicService.pauseMusic();
     notifyListeners();
   }
 
@@ -94,9 +104,27 @@ class MusicModel with ChangeNotifier implements MusicProvider {
     notifyListeners();
   }
 
-@override
-void seekMusic(Duration newPosition) {
+  @override
+  void seekMusic(Duration newPosition) {
     _musicService.seekMusic(newPosition);
     notifyListeners();
-}
+  }
+
+  @override
+  void nextMusic() {
+    final nextIndex = _musicService.nextMusic();
+    final musicId = _musicService.getMusicId(nextIndex);
+    log('next musicId : $musicId');
+    _music = _musicService.getMusicById(musicId);
+    notifyListeners();
+  }
+
+  @override
+  void previousMusic() {
+    final previousIndex = _musicService.previousMusic();
+    final musicId = _musicService.getMusicId(previousIndex);
+    log('previous musicId : $musicId');
+    _music = _musicService.getMusicById(musicId);
+    notifyListeners();
+  }
 }
