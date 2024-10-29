@@ -1,9 +1,9 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:fedora/usecases/music_service.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:rxdart/rxdart.dart';
 
 import '../models/music.dart';
 import '../screens/music/widgets/music_body_widgets/seek_bar.dart';
@@ -26,22 +26,38 @@ abstract class MusicProvider {
   void nextMusic();
 
   void previousMusic();
+
+  Future<void> shuffleMusic(bool isEnabled);
+
+  void toggleRepeatMode(MusicLoopMode musicLoopMode);
 }
 
-/// ====================================================================== ///
+// ========================================================================== //
 class MusicModel with ChangeNotifier implements MusicProvider {
   final MusicService _musicService;
 
-  MusicModel(this._musicService);
+  MusicModel(this._musicService) {
+    _musicService.positionDataStream.listen((positionData) {
+      if (positionData.position >=
+          positionData.duration - const Duration(milliseconds: 200)) {
+        log("completed");
+        log('positionData.position : ${positionData.position}');
+        log('positionData.duration : ${positionData.duration - const Duration(milliseconds: 200)}');
+        _handlePlaybackCompletion();
+      }
+    });
+  }
 
-  /// ====================================================================== ///
+  // ======================================================================== //
   List<Music> _musics = [];
   bool _isLoading = false;
   Music _music = Music.empty();
   AudioPlayer _audioPlayer = AudioPlayer();
   Duration? _dragValue;
 
-  /// ====================================================================== ///
+  MusicLoopMode _musicLoopMode = MusicLoopMode.off;
+
+  // ======================================================================== //
   List<Music> get musics => _musics;
 
   bool get isLoading => _isLoading;
@@ -52,16 +68,20 @@ class MusicModel with ChangeNotifier implements MusicProvider {
 
   Duration? get dragValue => _dragValue;
 
-  Stream<PositionData> get positionDataStream =>
-      Rx.combineLatest3<Duration, Duration, Duration?, PositionData>(
-        _audioPlayer.positionStream,
-        _audioPlayer.bufferedPositionStream,
-        _audioPlayer.durationStream,
-        (position, bufferedPosition, duration) =>
-            PositionData(position, bufferedPosition, duration ?? Duration.zero),
-      );
+  // LoopMode get loopMode => _loopMode;
 
-  /// ====================================================================== ///
+  MusicLoopMode get musicLoopMode => _musicLoopMode;
+
+  Stream<PositionData> get positionDataStream =>
+      _musicService.positionDataStream;
+
+  // ======================================================================== //
+  @override
+  void dispose() {
+    _musicService.dispose();
+    super.dispose();
+  }
+
   @override
   void loadPlaylist() {
     _isLoading = true;
@@ -112,6 +132,7 @@ class MusicModel with ChangeNotifier implements MusicProvider {
 
   @override
   void nextMusic() {
+    _musicService.musicLoopMode = _musicLoopMode;
     final nextIndex = _musicService.nextMusic();
     final musicId = _musicService.getMusicId(nextIndex);
     log('next musicId : $musicId');
@@ -126,5 +147,33 @@ class MusicModel with ChangeNotifier implements MusicProvider {
     log('previous musicId : $musicId');
     _music = _musicService.getMusicById(musicId);
     notifyListeners();
+  }
+
+  @override
+  Future<void> shuffleMusic(bool isEnabled) async {
+    await _musicService.shuffleMusic(isEnabled);
+    notifyListeners();
+  }
+
+  @override
+  void toggleRepeatMode(MusicLoopMode currentMusicLoopMode) {
+    _musicLoopMode = _musicService.toggleRepeatMode(currentMusicLoopMode);
+    notifyListeners();
+  }
+
+  void _handlePlaybackCompletion() {
+    switch (_musicLoopMode) {
+      case MusicLoopMode.one:
+        _audioPlayer.seek(Duration.zero);
+        _audioPlayer.play();
+        break;
+      case MusicLoopMode.all:
+        nextMusic();
+        break;
+      case MusicLoopMode.off:
+        log('MusicLoopMode.off, nextMusic');
+        nextMusic();
+        break;
+    }
   }
 }

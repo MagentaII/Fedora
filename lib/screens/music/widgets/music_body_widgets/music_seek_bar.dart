@@ -28,7 +28,7 @@ class MusicSeekBar extends StatelessWidget {
             stream: musicModel.positionDataStream,
             builder: (context, snapshot) {
               final positionData = snapshot.data;
-              log('positionData duration: ${positionData?.duration ?? Duration.zero}');
+              log('positionData position: ${positionData?.position ?? Duration.zero}');
               return Column(
                 children: [
                   SeekBar(

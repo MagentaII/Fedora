@@ -8,8 +8,8 @@ import '../../provider/music_model.dart';
 
 /// MusicContainer manages the dynamic expansion and collapse of the Music View,
 /// allowing users to adjust its size and visibility through gestures.
-
-/// ======================================================================== ///
+///
+// ========================================================================== //
 enum MusicViewState {
   expanded, // Music view has been expanded
   collapsed, // Music view has been collapsed
@@ -23,7 +23,7 @@ enum BottomSheetState {
   hide, // Bottom sheet is hidden
 }
 
-/// ======================================================================== ///
+// ========================================================================== //
 class MusicContainer extends StatefulWidget {
   const MusicContainer({super.key});
 
@@ -33,7 +33,7 @@ class MusicContainer extends StatefulWidget {
 
 class _MusicContainerState extends State<MusicContainer>
     with TickerProviderStateMixin {
-  /// ====================================================================== ///
+  // ======================================================================== //
   static const double spacing = 30; // Spacing between image and border
   static const double appBarHeight = 72;
 
@@ -49,7 +49,7 @@ class _MusicContainerState extends State<MusicContainer>
   // Refers to the bottom sheet when the Music view is expanded.
   static const double minimumBottomSheetHeight = 96;
 
-  /// ====================================================================== ///
+  // ======================================================================== //
   late double musicViewHeight;
   late double bottomSheetHeight;
   late double imageHeight;
@@ -68,7 +68,7 @@ class _MusicContainerState extends State<MusicContainer>
   late Animation<double> _musicViewHeightAnimation;
   late Animation<double> _bottomSheetHeightAnimation;
 
-  /// ====================================================================== ///
+  // ======================================================================== //
   @override
   void initState() {
     super.initState();
@@ -88,7 +88,7 @@ class _MusicContainerState extends State<MusicContainer>
     collapseMusicView();
   }
 
-  /// ====================================================================== ///
+  // ======================================================================== //
   @override
   void dispose() {
     _musicViewAnimationController.dispose();
@@ -96,7 +96,7 @@ class _MusicContainerState extends State<MusicContainer>
     super.dispose();
   }
 
-  /// ====================================================================== ///
+  // ======================================================================== //
   @override
   Widget build(BuildContext context) {
     log('offsetX : $imageOffsetX, offsetY : $imageOffsetY');
@@ -136,9 +136,9 @@ class _MusicContainerState extends State<MusicContainer>
     );
   }
 
-  /// ====================================================================== ///
-  /// ====================================================================== ///
-  /// ====================================================================== ///
+  // ======================================================================== //
+  // ======================================================================== //
+  // ======================================================================== //
   Widget _buildMusicView(VoidCallback onCollapseTap, VoidCallback onTarBarTap) {
     return Stack(
       children: [
@@ -166,7 +166,7 @@ class _MusicContainerState extends State<MusicContainer>
     );
   }
 
-  /// ====================================================================== ///
+  // ======================================================================== //
   void collapseMusicView() {
     musicViewState = MusicViewState.collapsed;
     bottomSheetState = BottomSheetState.hide;
@@ -233,7 +233,7 @@ class _MusicContainerState extends State<MusicContainer>
     bottomMusicOpacity = 1.0 - musicBodyOpacity;
   }
 
-  /// ====================================================================== ///
+  // ======================================================================== //
   void collapseBottomSheet() {
     expandMusicView(); // Collapse Bottom Sheet is equivalent to Expand Music View
   }
@@ -294,7 +294,7 @@ class _MusicContainerState extends State<MusicContainer>
         normalizedHeight * collapseMusicControllerTargetOffsetY;
   }
 
-  /// ====================================================================== ///
+  // ======================================================================== //
   // Handle pan updates (drag)
   void _onPanUpdate(DragUpdateDetails details) {
     log('details_music_view : ${details.delta.dy}'); // > 0 Down、< 0 Up
@@ -333,7 +333,7 @@ class _MusicContainerState extends State<MusicContainer>
     });
   }
 
-  /// ====================================================================== ///
+  // ======================================================================== //
   // Smooth animation to expand or collapse the music view
   void animateMusicView(double targetHeight) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -404,7 +404,7 @@ class _MusicContainerState extends State<MusicContainer>
     _bottomSheetAnimationController.forward(from: 0.0);
   }
 
-  /// ====================================================================== ///
+  // ======================================================================== //
   // Handle pan end (release)
   void _onPanEnd(DragEndDetails details) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -431,7 +431,7 @@ class _MusicContainerState extends State<MusicContainer>
     });
   }
 
-  /// ====================================================================== ///
+  // ======================================================================== //
   void _collapseMusicControllerOnTap() {
     final screenHeight = MediaQuery.of(context).size.height;
     if (musicViewState == MusicViewState.collapsed) {

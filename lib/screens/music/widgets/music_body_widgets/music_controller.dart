@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../usecases/music_service.dart';
+
 class MusicController extends StatelessWidget {
   const MusicController({super.key});
 
@@ -20,11 +22,11 @@ class MusicController extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.shuffle),
-                color: Colors.white,
-                iconSize: 28,
+              StreamBuilder<bool>(
+                stream: musicModel.audioPlayer.shuffleModeEnabledStream,
+                builder: (context, AsyncSnapshot<bool> snapshot) {
+                  return _shuffleButton(context, snapshot.data ?? false);
+                },
               ),
               IconButton(
                 onPressed: () {
@@ -51,11 +53,9 @@ class MusicController extends StatelessWidget {
                 color: Colors.white,
                 iconSize: 40,
               ),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.repeat_sharp),
-                color: Colors.white,
-                iconSize: 28,
+              _repeatButton(
+                context,
+                musicModel.musicLoopMode,
               ),
             ],
           ),
@@ -65,7 +65,7 @@ class MusicController extends StatelessWidget {
   }
 }
 
-/// ======================================================================== ///
+// ========================================================================== //
 Widget _playPauseButton(BuildContext context,
     {PlayerState? playerState, AudioPlayer? audioPlayer}) {
   log('click play button');
@@ -132,4 +132,40 @@ Widget _playPauseButton(BuildContext context,
       },
     );
   }
+}
+
+Widget _shuffleButton(BuildContext context, bool isEnabled) {
+  return IconButton(
+    icon: Icon(
+      Icons.shuffle,
+      color: isEnabled ? Colors.white : Colors.white38,
+      size: 28,
+    ),
+    onPressed: () async {
+      await context.read<MusicModel>().shuffleMusic(isEnabled);
+    },
+  );
+}
+
+Widget _repeatButton(BuildContext context, MusicLoopMode musicLoopMode) {
+  const cycleModes = [
+    MusicLoopMode.off,
+    MusicLoopMode.all,
+    MusicLoopMode.one,
+  ];
+
+  final icons = [
+    const Icon(Icons.repeat_sharp, color: Colors.white38, size: 28),
+    const Icon(Icons.repeat_sharp, color: Colors.white, size: 28),
+    const Icon(Icons.repeat_one_sharp, color: Colors.white, size: 28),
+  ];
+
+  final index = cycleModes.indexOf(musicLoopMode);
+
+  return IconButton(
+    icon: icons[index],
+    onPressed: () {
+      context.read<MusicModel>().toggleRepeatMode(musicLoopMode);
+    },
+  );
 }
