@@ -71,6 +71,11 @@ class MusicService implements MusicServiceImpl {
 
   @override
   AudioPlayer loadMusics() {
+    // 如果已經有音樂加載過，直接返回音樂播放器
+    if (_audioPlayer.audioSource != null) {
+      return _audioPlayer;
+    }
+
     final musics = _musicRepository.getAllMusic();
     if (musics.isNotEmpty) {
       final audioSources = musics.map((music) {

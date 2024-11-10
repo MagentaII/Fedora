@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
 
-class HomeSliverAppBar extends StatelessWidget {
-  const HomeSliverAppBar({super.key});
+class FedoraSliverAppBar extends StatelessWidget {
+  final String title;
+
+  const FedoraSliverAppBar({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
-    return const SliverAppBar(
+    return SliverAppBar(
       pinned: true,
       floating: true,
       snap: true,
-      backgroundColor: Color(0xFF002626),  // 设置非透明背景
+      backgroundColor: const Color(0xFF002626),
+      // 设置非透明背景
       title: Text(
-        'Fedora Music', // Title for the music list
-        style: TextStyle(
+        title, // Title for the music list
+        style: const TextStyle(
           color: Colors.white,
           fontSize: 28,
           fontWeight: FontWeight.bold,
         ),
       ),
     );
-
-
 
     // final double statusBarHeight = MediaQuery.of(context).padding.top;
     //

@@ -1,21 +1,24 @@
+import 'dart:developer';
+
 import 'package:fedora/provider/music_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/home_sliver_app_bar.dart';
-import '../widgets/home_body.dart';
+import '../../widgets/fedora_sliver_app_bar.dart';
+import '../widgets/playlist_body.dart';
 
-class HomeView extends StatefulWidget {
-  const HomeView({super.key});
+class PlaylistView extends StatefulWidget {
+  const PlaylistView({super.key});
 
   @override
-  State<HomeView> createState() => _HomeViewState();
+  State<PlaylistView> createState() => _PlaylistViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _PlaylistViewState extends State<PlaylistView> {
   @override
   void initState() {
     super.initState();
+    log('initState');
 
     // 确保在 widget 构建完成后调用 loadPlaylist()
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -46,8 +49,8 @@ class _HomeViewState extends State<HomeView> {
         ),
         child: const CustomScrollView(
           slivers: [
-            HomeSliverAppBar(),
-            HomeBody(),
+            FedoraSliverAppBar(title: 'Fedora Music',),
+            PlaylistBody(),
           ],
         ),
       ),

@@ -1,6 +1,7 @@
 import 'dart:developer';
-import 'package:fedora/screens/home/views/home_view.dart';
 import 'package:fedora/screens/music/views/music_view.dart';
+import 'package:fedora/screens/playlist/views/playlist_view.dart';
+import 'package:fedora/screens/podcast/views/podcast_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -38,7 +39,8 @@ class _MusicContainerState extends State<MusicContainer>
   static const double appBarHeight = 72;
 
   /// Music View
-  static const double minimumMusicViewHeight = 72;
+  static const double minimumMusicViewHeight = 72 + 56;
+  static const double minimumMusicViewHeightWhenBottomSheetExpanded = 72;
 
   /// Music View Image
   static const double minimumImageSize = 60; // Height or Width
@@ -46,8 +48,14 @@ class _MusicContainerState extends State<MusicContainer>
   static const double initialImageOffsetY = 7; // initial image offset Y
 
   /// Bottom Sheet
-  // Refers to the bottom sheet when the Music view is expanded.
+  /// Refers to the bottom sheet when the Music view is expanded.
   static const double minimumBottomSheetHeight = 96;
+
+  /// Bottom Navigation Bar
+  static const List<Widget> _widgetOptions = <Widget>[
+    PlaylistView(),
+    PodcastView(),
+  ];
 
   // ======================================================================== //
   late double musicViewHeight;
@@ -59,6 +67,7 @@ class _MusicContainerState extends State<MusicContainer>
   late double musicBodyOpacity; // Music Body's opacity (image not included)
   late double bottomMusicOpacity;
   late double collapseMusicControllerOffsetY;
+  late double bottomNavigationBarOffsetY;
   late MusicViewState musicViewState;
   late BottomSheetState bottomSheetState;
 
@@ -68,10 +77,14 @@ class _MusicContainerState extends State<MusicContainer>
   late Animation<double> _musicViewHeightAnimation;
   late Animation<double> _bottomSheetHeightAnimation;
 
+  /// Bottom Navigation Bar
+  late int _selectedIndex;
+
   // ======================================================================== //
   @override
   void initState() {
     super.initState();
+    _selectedIndex = 0;
 
     // initial MusicViewAnimationController
     _musicViewAnimationController = AnimationController(
@@ -101,12 +114,15 @@ class _MusicContainerState extends State<MusicContainer>
   Widget build(BuildContext context) {
     log('offsetX : $imageOffsetX, offsetY : $imageOffsetY');
     final musicModel = Provider.of<MusicModel>(context);
+
     return Scaffold(
+      backgroundColor: const Color(0XFF242424),
+      // backgroundColor: Colors.indigoAccent,
       body: Stack(
         children: [
-          const HomeView(),
-          // home
-          // library
+          _widgetOptions.elementAt(_selectedIndex),
+          // Library
+          // Podcast
           musicModel.music.musicId == '-1'
               ? _buildMusicView(() {}, () {})
               : GestureDetector(
@@ -131,6 +147,39 @@ class _MusicContainerState extends State<MusicContainer>
                     _musicTarBarOnTap,
                   ),
                 ),
+
+          Opacity(
+            opacity: 1.0,
+            child: Transform.translate(
+              offset: Offset(0, bottomNavigationBarOffsetY),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: BottomNavigationBar(
+                  items: const <BottomNavigationBarItem>[
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.library_music_outlined),
+                      activeIcon: Icon(Icons.library_music),
+                      label: 'Library',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.podcasts_outlined),
+                      activeIcon: Icon(Icons.podcasts),
+                      label: 'Podcast',
+                    ),
+                  ],
+                  onTap: (index) {
+                    setState(() {
+                      _selectedIndex = index;
+                    });
+                  },
+                  currentIndex: _selectedIndex,
+                  backgroundColor: const Color(0XFF242424),
+                  selectedItemColor: Colors.white,
+                  unselectedItemColor: Colors.white70,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -171,7 +220,7 @@ class _MusicContainerState extends State<MusicContainer>
     musicViewState = MusicViewState.collapsed;
     bottomSheetState = BottomSheetState.hide;
 
-    musicViewHeight = minimumMusicViewHeight; // 72.dp
+    musicViewHeight = minimumMusicViewHeight; // 72.dp + 56.dp
     bottomSheetHeight = 0;
     imageHeight = minimumImageSize; // 60.dp
     imageWidth = minimumImageSize; // 60.dp
@@ -180,6 +229,7 @@ class _MusicContainerState extends State<MusicContainer>
     imageOffsetX = initialImageOffsetX; // 20
     imageOffsetY = initialImageOffsetY; // 7
     collapseMusicControllerOffsetY = 0.0;
+    bottomNavigationBarOffsetY = 0.0;
   }
 
   void expandMusicView() {
@@ -199,6 +249,7 @@ class _MusicContainerState extends State<MusicContainer>
     imageOffsetX = (screenWidth - imageWidth) / 2;
     imageOffsetY = statusBarHeight + appBarHeight;
     collapseMusicControllerOffsetY = 0.0;
+    bottomNavigationBarOffsetY = kBottomNavigationBarHeight;
   }
 
   void dynamicCollapseAndExpandMusicView() {
@@ -231,6 +282,9 @@ class _MusicContainerState extends State<MusicContainer>
     // Calculate opacity based on height
     musicBodyOpacity = normalizedHeight;
     bottomMusicOpacity = 1.0 - musicBodyOpacity;
+
+    // Adjust bottom navigation bar position based on height
+    bottomNavigationBarOffsetY = kBottomNavigationBarHeight * normalizedHeight;
   }
 
   // ======================================================================== //
@@ -244,8 +298,8 @@ class _MusicContainerState extends State<MusicContainer>
 
     bottomSheetState = BottomSheetState.expanded;
 
-    bottomSheetHeight =
-        screenHeight - (statusBarHeight + minimumMusicViewHeight);
+    bottomSheetHeight = screenHeight -
+        (statusBarHeight + minimumMusicViewHeightWhenBottomSheetExpanded);
     imageHeight = minimumImageSize; // 60.dp
     imageWidth = minimumImageSize; // 60.dp
     imageOffsetX = initialImageOffsetX; // 20
@@ -266,7 +320,7 @@ class _MusicContainerState extends State<MusicContainer>
     double normalizedHeight = (bottomSheetHeight - minimumBottomSheetHeight) /
         (screenHeight -
             statusBarHeight -
-            minimumMusicViewHeight -
+            minimumMusicViewHeightWhenBottomSheetExpanded -
             minimumBottomSheetHeight); // Normalization : [0, 1]
 
     double maximumImageSize = screenWidth - (spacing * 2);
@@ -324,7 +378,9 @@ class _MusicContainerState extends State<MusicContainer>
       if (newBottomSheetHeight < minimumBottomSheetHeight) {
         collapseBottomSheet();
       } else if (newBottomSheetHeight >=
-          screenHeight - (statusBarHeight + minimumMusicViewHeight)) {
+          screenHeight -
+              (statusBarHeight +
+                  minimumMusicViewHeightWhenBottomSheetExpanded)) {
         expandBottomSheet();
       } else {
         bottomSheetHeight = newBottomSheetHeight;
@@ -391,7 +447,9 @@ class _MusicContainerState extends State<MusicContainer>
       if (status == AnimationStatus.completed) {
         setState(() {
           if (targetHeight ==
-              (screenHeight - (statusBarHeight + minimumMusicViewHeight))) {
+              (screenHeight -
+                  (statusBarHeight +
+                      minimumMusicViewHeightWhenBottomSheetExpanded))) {
             expandBottomSheet();
           } else if (targetHeight == minimumBottomSheetHeight) {
             collapseBottomSheet();
@@ -422,8 +480,8 @@ class _MusicContainerState extends State<MusicContainer>
       }
 
       if (bottomSheetHeight > screenHeight / 2) {
-        animateBottomSheet(
-            screenHeight - (statusBarHeight + minimumMusicViewHeight));
+        animateBottomSheet(screenHeight -
+            (statusBarHeight + minimumMusicViewHeightWhenBottomSheetExpanded));
       } else if (bottomSheetHeight <= screenHeight / 2 &&
           bottomSheetHeight >= minimumBottomSheetHeight) {
         animateBottomSheet(minimumBottomSheetHeight);
@@ -447,8 +505,8 @@ class _MusicContainerState extends State<MusicContainer>
     final statusBarHeight = MediaQuery.of(context).padding.top;
     if (bottomSheetState == BottomSheetState.collapsed &&
         musicViewState == MusicViewState.expanded) {
-      animateBottomSheet(
-          screenHeight - (statusBarHeight + minimumMusicViewHeight));
+      animateBottomSheet(screenHeight -
+          (statusBarHeight + minimumMusicViewHeightWhenBottomSheetExpanded));
     }
   }
 }
