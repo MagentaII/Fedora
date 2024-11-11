@@ -36,39 +36,45 @@ class SongSliverListItem extends StatelessWidget {
               final music = musicModel.musics[index];
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4.0),
-                child: ListTile(
-                  leading: Container(
-                    width: 60.0,
-                    height: 60.0,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(4),
-                      shape: BoxShape.rectangle,
-                      image: DecorationImage(
-                        image: AssetImage(
-                          music.musicImage.isNotEmpty
-                              ? music.musicImage
-                              : 'assets/images/default_album_art.jpg',
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {
+                      // Select and Play Music
+                      context.read<MusicModel>().selectAndPlayMusic(index);
+                    },
+                    child: ListTile(
+                      leading: Container(
+                        width: 60.0,
+                        height: 60.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                          shape: BoxShape.rectangle,
+                          image: DecorationImage(
+                            image: AssetImage(
+                              music.musicImage.isNotEmpty
+                                  ? music.musicImage
+                                  : 'assets/images/default_album_art.jpg',
+                            ),
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                        fit: BoxFit.cover,
                       ),
+                      title: Text(
+                        music.musicName,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      subtitle: Text(
+                        music.artistName,
+                        style: const TextStyle(color: Colors.white70),
+                      ),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 20.0),
                     ),
                   ),
-                  title: Text(
-                    music.musicName,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  subtitle: Text(
-                    music.artistName,
-                    style: const TextStyle(color: Colors.white70),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  onTap: () {
-                    // Select and Play Music
-                    context.read<MusicModel>().selectAndPlayMusic(index);
-                  },
                 ),
               );
             },
