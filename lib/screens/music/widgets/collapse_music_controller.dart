@@ -114,7 +114,7 @@ class CollapseMusicController extends StatelessWidget {
                           // 移除點擊擴展效果
                           trackShape: const RectangularSliderTrackShape(),
                           // 使用矩形的滑桿形狀
-                          trackHeight: 2.0, // 控制滑桿高度
+                          trackHeight: 1.0, // 控制滑桿高度
                         ),
                         child: Slider(
                           min: 0.0,
