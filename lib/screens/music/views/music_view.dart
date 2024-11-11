@@ -58,6 +58,7 @@ class MusicView extends StatelessWidget {
             offset: Offset(0, collapseMusicControllerOffsetY),
             child: AnimatedOpacity(
               opacity: bottomMusicOpacity,
+              // opacity: 1.0,
               duration: const Duration(milliseconds: 300),
               child: CollapseMusicController(onTap: collapseMusicControllerOnTap),
             ),
